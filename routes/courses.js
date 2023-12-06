@@ -15,10 +15,11 @@ const bcrypt = require('bcrypt')
 const router = express.Router();
 const {
     User
-} = require('../models/user.js')
+} = require("../models");
+
 const {
     Course
-} = require('../models/course.js')
+} = require('../models')
 
 
 router.get('/', asyncHandler(async (req, res) => {
