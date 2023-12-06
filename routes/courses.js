@@ -50,10 +50,36 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 
 // create new course
-router.post('/', authenticateUser, asyncHandler(async(req, res) => {
+router.post('/', authenticateUser, asyncHandler(async (req, res) => {
     let course = await Course.create(req.body)
     res.location(`/${course.id}`)
     res.status(201).json()
 }))
 
+// put route for course
+router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id)
+    if (course) {
+        await course.update(req.body)
+        res.status(204).end()
+    } else {
+        res.status(404).json({
+            msg: 'Course Not Found'
+        })
+    }
+}))
+
+
+
+// delete route for course
+router.delete('/:id', authenticateUser, asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id)
+    if (course) {
+        await course.destroy()
+        res.status(204).end()
+    } else {
+        res.status(404).json({
+            msg: 'Course Not Found'
+        })
+    }}))
 module.exports = router;
