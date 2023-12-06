@@ -21,7 +21,7 @@ const {
     Course
 } = require('../models')
 
-
+// get courses
 router.get('/', asyncHandler(async (req, res) => {
     let courses = await Course.findAll({
         include: [{
@@ -31,6 +31,21 @@ router.get('/', asyncHandler(async (req, res) => {
     res.json(courses)
 }))
 
+// get course by id route
+router.get('/:id', asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id, {
+        include: [{
+            model: User
+        }]
+    })
+    if (course) {
+        res.status(200).json({
+            course
+        })
+    } else {
+        next()
+    }
 
+}))
 
 module.exports = router;
