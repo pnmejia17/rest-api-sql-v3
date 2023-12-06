@@ -12,26 +12,7 @@ const bcrypt = require('bcrypt')
 const router = express.Router();
 const { User } = require('../models/user.js')
 
-// ASYNC HANDLER
-
-// handler function to wrap each route 
-// replaces try/catch blocks for 
-// better code readability 
-
-// function asyncHandler(cb) {
-//     return async (req, res, next) => {
-//         try {
-//             await cb(req, res, next)
-//         } catch (error) {
-//             next(error)
-//         }
-//     }
-// }
-
-
-// returns a list of user
-
-// Route that returns a list of users.
+// Route that returns information of aunthenticated user
 router.get('/', authenticateUser, asyncHandler(async (req, res) => {
     const user = req.currentUser;
   
@@ -43,5 +24,20 @@ router.get('/', authenticateUser, asyncHandler(async (req, res) => {
     });
   }));
 
+
+// Route that creates a new user.
+router.post('/', asyncHandler(async (req, res) => {
+    try {
+      await User.create(req.body);
+      res.status(201).json({ "message": "Account successfully created!" });
+    } catch (error) {
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });   
+      } else {
+        throw error;
+      }
+    }
+  }));
 
 module.exports = router;
