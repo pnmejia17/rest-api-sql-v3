@@ -6,6 +6,7 @@ const morgan = require('morgan');
 
 // routes
 var usersRouter = require('./routes/users')
+var coursesRouter = require('./routes/courses')
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -23,6 +24,7 @@ app.use(express.json());
 
 //
 app.use('/api/users', usersRouter)
+app.use('/api/courses', coursesRouter)
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
