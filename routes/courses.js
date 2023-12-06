@@ -51,21 +51,40 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 // create new course
 router.post('/', authenticateUser, asyncHandler(async (req, res) => {
-    let course = await Course.create(req.body)
-    res.location(`/${course.id}`)
-    res.status(201).json()
+    try {
+        let course = await Course.create(req.body)
+        res.location(`/${course.id}`)
+        res.status(201).json()
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            const errors = error.errors.map(error => error.message)
+            res.status(400).json({
+                errors
+            })
+        } else {
+            throw error
+        }
+    }
+
 }))
 
 // put route for course
 router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id)
-    if (course) {
-        await course.update(req.body)
-        res.status(204).end()
-    } else {
-        res.status(404).json({
-            msg: 'Course Not Found'
-        })
+    try {
+        const course = await Course.findByPk(req.params.id)
+        if (course) {
+            await course.update(req.body)
+            res.status(204).end()
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            const errors = error.errors.map(error => error.message)
+            res.status(400).json({
+                errors
+            })
+        } else {
+            throw error
+        }
     }
 }))
 
@@ -81,5 +100,7 @@ router.delete('/:id', authenticateUser, asyncHandler(async (req, res) => {
         res.status(404).json({
             msg: 'Course Not Found'
         })
-    }}))
+    }
+})) 
+
 module.exports = router;
