@@ -53,7 +53,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 router.post('/', authenticateUser, asyncHandler(async (req, res) => {
     try {
         let course = await Course.create(req.body)
-        res.location(`/${course.id}`)
+        res.location(`api/courses/${course.id}`)
         res.status(201).json()
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
