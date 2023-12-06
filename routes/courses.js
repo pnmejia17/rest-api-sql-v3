@@ -48,4 +48,12 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 }))
 
+
+// create new course
+router.post('/', authenticateUser, asyncHandler(async(req, res) => {
+    let course = await Course.create(req.body)
+    res.location(`/${course.id}`)
+    res.status(201).json()
+}))
+
 module.exports = router;
